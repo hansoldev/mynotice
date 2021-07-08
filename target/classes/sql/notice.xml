@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="noticeDaoIF">
+	<select id="getNoticeDataList" resultType="com.mynotice.myapp.notice.model.NoticeVO">
+		SELECT count(*) over() as total_cnt, * FROM notice_info order by updatedate desc
+	</select>
+	
+	<select id="getNoticeData" resultType="com.mynotice.myapp.notice.model.NoticeVO">
+		SELECT * FROM notice_info where myid = #{myid}
+	</select>
+	
+	<delete id="deleteNotice" parameterType="map">
+		delete from notice_info where myid in (
+			<foreach collection="myids" item="val" separator=",">
+				#{val}::int
+			</foreach>
+		)
+	</delete>
+	
+	<insert id="insertNotice" parameterType="com.mynotice.myapp.notice.model.NoticeVO" >
+		insert into notice_info(myid, userid, title, contents,updatedate, regdate) 
+			values(nextval('seq_notice_id'), #{userid}, #{title}, #{contents}, now(), now())
+	</insert>
+</mapper> 
